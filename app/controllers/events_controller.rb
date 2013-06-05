@@ -83,4 +83,31 @@ class EventsController < ApplicationController
       format.json { render json: @event }
     end
   end
+
+  def checkin
+    event = Event.find(params[:id])
+    participant = event.participants.find_by_user_id(current_user.id)
+    respond_to do |format|
+      if participant.nil?
+        format.html { redirect_to event_path(event), alert: I18n.t('flash.participants.checkin_need_join_first') }
+        format.json { render json: {"message_type" => "alert", "message_body" => I18n.t('flash.participants.checkin_need_join_first'), "keep" => false} }
+      elsif ! event.start_time.today?
+        format.html { redirect_to event_path(event), alert: I18n.t('flash.participants.checkin_in_need_the_same_day_of_event_starttime') }
+        format.json { render json: {"message_type" => "alert", "message_body" => I18n.t('flash.participants.checkin_in_need_the_same_day_of_event_starttime'), "keep" => false} }
+      elsif participant.joined
+        format.html { redirect_to event_path(event), alert: I18n.t('flash.participants.checkin_more_than_1_time') }
+        format.json { render json: {"message_type" => "alert", "message_body" => I18n.t('flash.participants.checkin_more_than_1_time'), "keep" => false} }
+      else
+        if params[:checkin_code] == event.checkin_code
+          participant.joined = true
+          participant.save
+          format.html { redirect_to event_path(event), notice: I18n.t('flash.participants.checkin_welcome') }
+          format.json { render json: {"message_type" => "notice", "message_body" => I18n.t('flash.participants.checkin_welcome'), "keep" => false} }
+        else
+          format.html { redirect_to event_path(event), alert: I18n.t('flash.participants.checkin_wrong_checkin_code') }
+          format.json { render json: {"message_type" => "alert", "message_body" => I18n.t('flash.participants.checkin_wrong_checkin_code'), "keep" => true} }
+        end
+      end
+    end
+  end
 end
