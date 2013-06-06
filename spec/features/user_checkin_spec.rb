@@ -40,6 +40,7 @@ feature "user check in", js: true do
     login_user @hanmeimei
 
     visit checkin_event_path(@event, checkin_code: @event.checkin_code)
+    puts page.body
     expect(page).to have_content I18n.t('flash.participants.checkin_in_need_the_same_day_of_event_starttime')
   end
 
@@ -58,6 +59,7 @@ feature "user check in", js: true do
 
     visit checkin_event_path(@event, checkin_code: @event.checkin_code)
     visit checkin_event_path(@event, checkin_code: @event.checkin_code)
+    puts page.body
     expect(page).to have_content I18n.t('flash.participants.checkin_more_than_1_time')
   end
 end
