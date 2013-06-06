@@ -39,7 +39,11 @@ feature "user check in", js: true do
     @participant = create(:event_participant, event: @event, user: @hanmeimei)
     login_user @hanmeimei
 
+    puts "AAAAAAAA"
+    puts Event.all.to_s
     visit checkin_event_path(@event, checkin_code: @event.checkin_code)
+    puts "BBBBBBBB"
+    puts Event.all.to_s
     expect(page).to have_content I18n.t('flash.participants.checkin_in_need_the_same_day_of_event_starttime')
   end
 
@@ -56,8 +60,14 @@ feature "user check in", js: true do
     @participant = create(:event_participant, event: @event, user: @hanmeimei)
     login_user @hanmeimei
 
+    puts "CCCCCCCCC"
+    puts Event.all.to_s
     visit checkin_event_path(@event, checkin_code: @event.checkin_code)
+    puts "DDDDDDDDD"
+    puts Event.all.to_s
     visit checkin_event_path(@event, checkin_code: @event.checkin_code)
+    puts "EEEEEEEE"
+    puts Event.all.to_s
     expect(page).to have_content I18n.t('flash.participants.checkin_more_than_1_time')
   end
 end
