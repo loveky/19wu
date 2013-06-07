@@ -13,6 +13,8 @@ class EventsController < ApplicationController
   end
 
   def show
+    puts "event id:#{params[:id]}"
+    puts "event size:#{Event.all.size}"
     @event = Event.find(params[:id])
     respond_to do |format|
       format.html # show.html.erb
